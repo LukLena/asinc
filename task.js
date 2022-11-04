@@ -8,15 +8,18 @@ class AlarmClock {
       throw new Error('error text')
     }
     if (this.alarmCollection.find(alarm => alarm.id === id)) {
-      console.error()
-      return;
+      console.error('Звонок уже существует');
+      return 
     }
     this.alarmCollection.push({ id, time, callback })
   }
   removeClock(id) {
-    let result = this.alarmCollection.filter(alarm => alarm.id !== id)
-    this.alarmCollection = result;
-    return true;
+      debugger
+    let amountAlarms = this.alarmCollection.length
+    
+ this.alarmCollection = this.alarmCollection.filter(alarm => alarm.id !== id)
+  return amountAlarms > this.alarmCollection.length
+
   }
   getCurrentFormattedTime() {
     let now = new Date();
@@ -31,14 +34,14 @@ class AlarmClock {
     return `${hour}:${minutes}`;
   }
   start() {
+    checkClock = checkClock.bind(this)
     function checkClock(alarm) {
-      if (alarm.time === new Date) {
+      if (alarm.time === this.getCurrentFormattedTime()) {
         alarm.callback()
       }
     }
     if (this.timerId === null) {
-      let setInt = setInterval(() => this.alarmCollecton.forEach(alarm => checkClock(alarm)), 1000)
-      this.timerId = setInt;
+      this.timerId = setInterval(() => this.alarmCollecton.forEach(alarm => checkClock(alarm)), 1000)
     }
   }
   stop() {
@@ -52,7 +55,7 @@ class AlarmClock {
   }
   clearAlarms() {
     this.stop()
-    this.alarmCollection.splice(0)
+    this.alarmCollection = []
   }
 }
 
